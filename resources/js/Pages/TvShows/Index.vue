@@ -1,8 +1,13 @@
+
 <template>
     <AdminLayout title="Dashboard">
-        <template #header> Tv Show Index </template>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Tv Shows Index
+            </h2>
+        </template>
 
-        <div class="py-2">
+        <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
                     <div class="w-full flex mb-4 p-2 justify-end">
@@ -11,7 +16,7 @@
                                 <label
                                     for="tmdb_id_g"
                                     class="block text-sm font-medium text-gray-700 mr-4"
-                                >Tv Tmdb Id</label
+                                >TvShow Tmdb Id</label
                                 >
                                 <div class="relative rounded-md shadow-sm">
                                     <input
@@ -19,14 +24,14 @@
                                         id="tmdb_id_g"
                                         name="tmdb_id_g"
                                         class="px-3 py-2 border border-gray-300 rounded"
-                                        placeholder="Tv ID"
+                                        placeholder="TvShow ID"
                                     />
                                 </div>
                             </div>
                             <div class="p-1">
                                 <button
                                     type="button"
-                                    @click="generateTvShow"
+                                    @click="generateTvShows"
                                     class="
                     inline-flex
                     items-center
@@ -59,6 +64,7 @@
 
                     <div
                         class="w-full mb-8 overflow-hidden bg-white rounded-lg shadow-lg"
+
                     >
                         <div class="p-2 m-2">
                             <div class="flex justify-between">
@@ -125,36 +131,25 @@
                                     <TableHead>Slug</TableHead>
                                     <TableHead>Poster</TableHead>
                                     <TableHead>Manage</TableHead>
+
                                 </template>
-                                <TableRow v-for="tvShow in tvShows.data" :key="tvShow.id">
-                                    <TableData>{{ tvShow.name }}</TableData>
-                                    <TableData>{{ tvShow.slug }}</TableData>
-                                    <TableData>{{ tvShow.poster_path }}</TableData>
-                                    <TableData>
-                                        <div class="flex justify-around">
-                                            <ButtonLink
-                                                class="bg-blue-500 hover:bg-blue-700"
-                                                :link="route('admin.seasons.index', tvShow.id)"
-                                            >Seasons</ButtonLink
-                                            >
-                                            <ButtonLink
-                                                :link="route('admin.tv-shows.edit', tvShow.id)"
-                                            >Edit</ButtonLink
-                                            >
-                                            <ButtonLink
-                                                class="bg-red-500 hover:bg-red-700"
-                                                :link="route('admin.tv-shows.destroy', tvShow.id)"
-                                                method="delete"
-                                                as="button"
-                                                type="button"
-                                            >Delete</ButtonLink
-                                            >
-                                        </div>
+                                <TableRow v-for="tvshow in tvShows.data"
+                                          :key="tvshow.id">
+                                  <TableData>{{ tvshow.name }}</TableData>
+                                  <TableData>{{ tvshow.slug }}</TableData>
+                                  <TableData>{{ tvshow.poster_path }}</TableData>
+                                  <TableData>
+                                       <div class="flex justify-around">
+                                             <ButtonLink :link="route('admin.tv-shows.edit', tvshow.id)">Edit</ButtonLink>
+                                             <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.tv-shows.destroy', tvshow.id)">Delete
+                                            </ButtonLink>
+                                       </div>
                                     </TableData>
                                 </TableRow>
                             </Table>
+
                             <div class="m-2 p-2">
-                                <Pagination :links="tvShows.links" />
+                                <Pagination :links="tvShows.links"/>
                             </div>
                         </div>
                     </div>
@@ -164,56 +159,51 @@
     </AdminLayout>
 </template>
 
+
 <script setup>
-import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { Link } from "@inertiajs/vue3";
-import Pagination from "@/Components/Pagination.vue";
-import { ref, watch, defineProps } from "vue";
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import Pagination from '@/Components/Pagination.vue'
+import {Link} from '@inertiajs/vue3'
+import {ref, watch} from 'vue'
+
 import {router} from '@inertiajs/vue3'
-import Table from "@/Components/Table";
-import TableData from "@/Components/TableData";
-import TableHead from "@/Components/TableHead";
-import TableRow from "@/Components/TableRow";
-import ButtonLink from "@/Components/ButtonLink";
+import TableHead from "@/Components/TableHead.vue";
+import TableData from "@/Components/TableData.vue";
+import ButtonLink from "@/Components/ButtonLink.vue";
+import TableRow from "@/Components/TableRow.vue";
+import Table from "@/Components/Table.vue";
 
 const props = defineProps({
     tvShows: Object,
     filters: Object,
-});
-
-const search = ref(props.filters.search);
-const perPage = ref(props.filters.perPage);
-const tvShowTMDBId = ref("");
-
-watch(search, (value) => {
-    router.get(
-        "/admin/tv-shows",
-        { search: value, perPage: perPage.value },
+})
+const search = ref(props.filters.search)
+const perPage = ref(props.filters.perPage)
+const tvShowTMDBId = ref('')
+watch(search, value => {
+    router.get(`/admin/tv-shows`, {search: value, perPage: perPage.value},
         {
             preserveState: true,
-            replace: true,
-        }
-    );
-});
+            preserveScroll: true,
+            replace: true
+        })
+
+})
 
 function getTvShows() {
-    router.get(
-        "/admin/tv-shows",
-        { perPage: perPage.value, search: search.value },
+    router.get(`/admin/tv-shows`, {perPage: perPage.value, search: search.value},
         {
             preserveState: true,
-            replace: true,
-        }
-    );
+            preserveScroll: true,
+            replace: true
+        })
 }
 
-function generateTvShow() {
-    router.post(
-        "/admin/tv-shows",
-        { tvShowTMDBId: tvShowTMDBId.value },
-        {
-            onFinish: () => (tvShowTMDBId.value = ""),
+function generateTvShows() {
+    router.post('/admin/tv-shows', {tvShowTMDBId: tvShowTMDBId.value}, {
+        onFinish: () => {
+            tvShowTMDBId.value = ''
         }
-    );
+    })
 }
 </script>

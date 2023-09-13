@@ -13,6 +13,7 @@ class TvShowController extends Controller
 {
     public function index()
     {
+
         $perPage = request()->input('perPage') ?: 5;
 
         return Inertia::render('TvShows/Index', [
@@ -26,14 +27,18 @@ class TvShowController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $tvShow = TvShow::where('tmdb_id', request()->input('tvShowTMDBId'))->first();
+
+
+        $tvShow = TvShow::where('tmdb_id',$request->tvShowTMDBId)->first();
+
         if ($tvShow) {
             return Redirect::back()->with('flash.banner', 'Tv Show Exists.');
         }
 
-        $tmdb_tv = Http::asJson()->get(config('services.tmdb.endpoint') . 'tv/' . request()->input('tvShowTMDBId') . '?api_key=' . config('services.tmdb.secret') . '&language=en-US');
+        $tmdb_tv = Http::asJson()->get(config('services.tmdb.endpoint') . 'tv/' .$request->tvShowTMDBId . '?api_key=' . config('services.tmdb.secret') . '&language=en-US');
+
         if ($tmdb_tv->successful()) {
             TvShow::create([
                 'tmdb_id' => $tmdb_tv['id'],
