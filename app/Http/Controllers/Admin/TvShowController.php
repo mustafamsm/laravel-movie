@@ -57,13 +57,13 @@ class TvShowController extends Controller
         return Inertia::render('TvShows/Edit', ['tvShow' => $tvShow]);
     }
 
-    public function update(TvShow $tvShow)
+    public function update(TvShow $tvShow,Request $request)
     {
-        $validated = Request::validate([
+        $request->validate([
             'name'    => 'required',
             'poster_path' => 'required'
         ]);
-        $tvShow->update($validated);
+        $tvShow->update($request->all());
         return Redirect::route('admin.tv-shows.index')->with('flash.banner', 'Tv Show updated.');
     }
 
