@@ -1,15 +1,16 @@
 <?php
 
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CastController;
-use App\Http\Controllers\Admin\EpisodeController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\MovieAttachController;
 use App\Http\Controllers\Admin\SeasonController;
-use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\TvShowController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Admin\EpisodeController;
 
 /*
 |--------------------------------------------------------------------------
