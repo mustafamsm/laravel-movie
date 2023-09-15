@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="mt-4">
                                     <label class="flex items-center">
-                                        <CheckBox name="is_public" v-model:checked="form.is_public" />
+                                        <Checkbox name="is_public" v-model:checked="form.is_public" />
                                         <span class="ml-2 text-sm text-gray-600">Public</span>
                                     </label>
                                     <div class="text-sm text-red-400" v-if="form.errors.is_public">
@@ -78,7 +78,8 @@ import { Link, useForm } from '@inertiajs/vue3'
 
  import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import CheckBox from "@/Components/CheckBox.vue";
+import Checkbox from "@/Components/Checkbox.vue";
+
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 
