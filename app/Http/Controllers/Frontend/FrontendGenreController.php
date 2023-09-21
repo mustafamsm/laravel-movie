@@ -9,6 +9,6 @@ use Illuminate\Http\Request;
 class FrontendGenreController extends Controller
 {
     public function show(Genre $genre){
-        
+       return   $genre;
     }
 }
