@@ -64,7 +64,8 @@
                                             </svg>
                                         </div>
 
-                                        <input v-model="search" type="text" placeholder="Search by title" class="
+                                        <input v-model="movieFilters.search" type="text" placeholder="Search by title"
+                                            class="
                                         px-8
                                         py-3
                                         w-full
@@ -78,7 +79,8 @@
                                     </div>
                                 </div>
                                 <div class="flex">
-                                    <select v-model="perPage" @change="getMovies" class="
+                                    <select v-model="movieFilters.perPage"
+                                        @change="movieFilters.perPage === $event.target.value" class="
                                         px-4
                                         py-3
                                         w-full
@@ -99,8 +101,63 @@
                         <div class="w-full overflow-x-auto">
                             <Table>
                                 <template #tableHead>
-                                    <TableHead>Title</TableHead>
-                                    <TableHead>Slug</TableHead>
+                                    <TableHead class="cursor-pointer" @click="sort('title')">
+                                        <div class="flex space-x-4 content-center">
+                                            <span>Title</span>
+                                            <svg v-if="movieFilters.column == 'title' &&
+                                                movieFilters.direction == 'desc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                            </svg>
+                                            <svg v-if="movieFilters.column == 'title' &&
+                                                movieFilters.direction == 'asc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                            </svg>
+                                        </div>
+                                    </TableHead>
+                                    <TableHead class="cursor-pointer" @click="sort('rating')">
+                                        <div class="flex space-x-4 content-center">
+                                            <span>Rating</span>
+                                            <svg v-if="movieFilters.column == 'rating' &&
+                                                movieFilters.direction == 'desc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                            </svg>
+                                            <svg v-if="movieFilters.column == 'rating' &&
+                                                movieFilters.direction == 'asc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                            </svg>
+                                        </div>
+                                    </TableHead>
+                                    <TableHead class="cursor-pointer" @click="sort('visits')">
+                                        <div class="flex space-x-4 content-center">
+                                            <span>Visits</span>
+                                            <svg v-if="movieFilters.column == 'visits' &&
+                                                movieFilters.direction == 'desc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                            </svg>
+                                            <svg v-if="movieFilters.column == 'visits' &&
+                                                movieFilters.direction == 'asc'
+                                                " xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                            </svg>
+                                        </div>
+                                    </TableHead>
                                     <TableHead>Poster</TableHead>
                                     <TableHead>Public</TableHead>
                                     <TableHead>Manage</TableHead>
@@ -108,7 +165,8 @@
                                 </template>
                                 <TableRow v-for="movie in movies.data" :key="movie.id">
                                     <TableData>{{ movie.title }}</TableData>
-                                    <TableData>{{ movie.slug }}</TableData>
+                                    <TableData>{{ movie.rating }}</TableData>
+                                    <TableData>{{ movie.visits }}</TableData>
                                     <TableData>
                                         <img class="h-12 w-12 rounded"
                                             :src="`https://www.themoviedb.org/t/p/w220_and_h330_face/${movie.poster_path}`" />
@@ -167,7 +225,7 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import Pagination from '@/Components/Pagination.vue'
 import { Link } from '@inertiajs/vue3'
-import { ref, watch } from 'vue'
+import { ref, watch, reactive } from 'vue'
 
 import { router } from '@inertiajs/vue3'
 import TableHead from "@/Components/TableHead.vue";
@@ -175,33 +233,49 @@ import TableData from "@/Components/TableData.vue";
 import ButtonLink from "@/Components/ButtonLink.vue";
 import TableRow from "@/Components/TableRow.vue";
 import Table from "@/Components/Table.vue";
-
+import { throttle, pickBy } from 'lodash'
 const props = defineProps({
     movies: Object,
     filters: Object,
 })
-const search = ref(props.filters.search)
-const perPage = ref(props.filters.perPage)
+
 const movieTMDBId = ref('')
-watch(search, value => {
-    router.get(`/admin/movies`, { search: value, perPage: perPage.value },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true
-        })
-
+const movieFilters = reactive({
+    search: props.filters.search,
+    perPage: props.filters.perPage,
+    column: props.filters.column,
+    direction: props.filters.direction,
 })
+watch(movieFilters,
+    throttle(() => {
+        let query = pickBy(movieFilters);
+        let queryRoute = route('admin.movies.index', Object.keys(query).length ? query : {
+            remember: 'forget',
 
-function getMovies() {
-    router.get(`/admin/movies`, { perPage: perPage.value, search: search.value },
-        {
+        });
+        router.get(queryRoute, {}, {
             preserveState: true,
             preserveScroll: true,
             replace: true
         })
-}
 
+    }, 500,
+        {
+            deep: true
+        }
+
+
+
+    )
+
+
+)
+
+function sort(column) {
+    movieFilters.column = column
+    movieFilters.direction = movieFilters.direction === 'asc' ? 'desc' : 'asc';
+
+}
 function generateMovies() {
     router.post('/admin/movies', { movieTMDBId: movieTMDBId.value }, {
         onFinish: () => {

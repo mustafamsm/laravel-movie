@@ -19,6 +19,8 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
+        "@headlessui/vue": "^1.7.16",
+        "lodash": "^4.17.21",
         "vue-multiselect": "^3.0.0-beta.2"
     }
 }

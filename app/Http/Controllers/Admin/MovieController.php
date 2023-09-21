@@ -21,10 +21,12 @@ class MovieController extends Controller
       'movies' => Movie::query()
         ->when(request()->input('search'), function ($query, $search) {
           $query->where('title', 'like', "%{$search}%");
+        })->when(request()->input('column'), function ($query, $column) {
+          $query->orderBy($column, request()->input('direction', 'desc'));
         })
         ->paginate($perPage)
         ->withQueryString(),
-      'filters' => request()->only(['search', 'perPage'])
+      'filters' => request()->only(['search', 'perPage','column','direction'])
     ]);
   }
 
