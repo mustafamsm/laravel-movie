@@ -13,7 +13,7 @@
       "
     >
       <div class="p-4 flex flex-row items-center justify-between space-x-2">
-        <a
+        <Link
           href="/"
           class="
             text-lg
@@ -25,7 +25,7 @@
             dark:text-white
             focus:outline-none focus:shadow-outline
           "
-          >Movie App</a
+          >Movie App</Link
         >
         <!-- <SearchModal class="w- 40 md:w-72" /> -->
         <button
