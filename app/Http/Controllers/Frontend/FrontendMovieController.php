@@ -17,8 +17,17 @@ class FrontendMovieController extends Controller
             'movies' => $movies
         ]);
     }
-    public function show()
+    public function show(Movie $movie)
     {
-        // return Inertia::render('Frontend/Movies/Show');
+        $latests=Movie::with('genres')->orderBy('created_at','desc')->take(9)->get();
+        
+        return Inertia::render('Frontend/Movies/Show',[
+           'movie'=>$movie,
+            'latests'=>$latests ,
+            'movieGenres'=>$movie->genres,
+            'casts'=>$movie->casts,
+            'tags'=>$movie->tags,
+            'trailers'=>$movie->trailers,
+        ]);
     }
 }
