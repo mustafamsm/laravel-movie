@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Models\Episode;
+use Inertia\Inertia;
 use App\Models\Season;
 use App\Models\TvShow;
+use App\Models\Episode;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class FrontendTvShowController extends Controller
 {
     public function index()
     {
-        // return Inertia::render('Frontend/Movies/Index');
+        $tvshows=TvShow::orderBy('created_at','desc')->paginate(15);
+        return Inertia::render('Frontend/TvShows/Index',[
+            'tvShows' => $tvshows
+        ]);
     }
     public function show(TvShow $tvShow)
     {
