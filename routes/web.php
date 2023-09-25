@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\SeasonController;
 use App\Http\Controllers\Admin\TvShowController;
 use App\Http\Controllers\Admin\EpisodeController;
 use App\Http\Controllers\Frontend\WelcomeController;
+use App\Http\Controllers\Frontend\FrontendTagController;
 use App\Http\Controllers\Frontend\FrontendCastController;
 use App\Http\Controllers\Frontend\FrontendGenreController;
 use App\Http\Controllers\Frontend\FrontendMovieController;
@@ -38,7 +39,7 @@ Route::get('/episodes/{episode:slug}', [FrontendTvShowController::class, 'showEp
 Route::get('/casts', [FrontendCastController::class, 'index'])->name('casts.index');
 Route::get('/casts/{cast:slug}', [FrontendCastController::class, 'show'])->name('casts.show');
 Route::get('/genres/{genre:slug}', [FrontendGenreController::class, 'show'])->name('genres.show');
-// Route::get('/tags/{tag:slug}', [FrontendTagController::class, 'show'])->name('tags.show');
+Route::get('/tags/{tag:slug}', [FrontendTagController::class, 'show'])->name('tags.show');
 
 
 

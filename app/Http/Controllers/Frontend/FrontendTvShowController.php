@@ -8,6 +8,7 @@ use App\Models\TvShow;
 use App\Models\Episode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Movie;
 
 class FrontendTvShowController extends Controller
 {
@@ -20,17 +21,37 @@ class FrontendTvShowController extends Controller
     }
     public function show(TvShow $tvShow)
     {
-        // return Inertia::render('Frontend/Movies/Show');
+        $latests=Movie::orderBy('created_at','desc')->take(9)->get();
+
+        return Inertia::render('Frontend/TvShows/Show',[
+            'tvShow' => $tvShow,
+            'seasons' => $tvShow->seasons()->orderBy('created_at','desc')->get(),
+            'latests'=>$latests
+        ]);
     }
 
     public function seasonShow(TvShow $tvShow,Season $season)
     {
-        // return Inertia::render('Frontend/Movies/Show');
+        $latests=Movie::orderBy('created_at','desc')->take(9)->get();
+
+        return Inertia::render('Frontend/TvShows/Seasons/Show',[
+            'tvShow' => $tvShow,
+            'season' => $season,
+            'episodes' => $season->episodes()->orderBy('created_at','desc')->get(),
+            'latests'=>$latests
+        ]);
     }
 
     public function showEpisode(Episode $episode)
     {
-        // return Inertia::render('Frontend/Movies/Show');
+        $latests = Episode::with('season')->latest()->take(12)->get();
+ 
+        return Inertia::render('Frontend/Episodes/Show',[
+            'episode' => $episode,
+            'season' => $episode->season,
+            'latests'=>$latests
+
+        ]);
     }
 
 }
