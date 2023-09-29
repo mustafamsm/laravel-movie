@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Searchable\SearchResult;
 
-class Movie extends Model
+class Movie extends Model implements \Spatie\Searchable\Searchable
 {
     use HasFactory;
     protected $fillable = [
@@ -23,6 +24,16 @@ class Movie extends Model
         'backdrop_path',
         'slug'
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        $url = route('movies.show', $this->slug);
+        return new SearchResult(
+            $this,
+            $this->title,
+            $url
+        );
+    }
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;

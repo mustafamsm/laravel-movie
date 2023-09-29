@@ -27,7 +27,7 @@
           "
           >Movie App</Link
         >
-        <!-- <SearchModal class="w- 40 md:w-72" /> -->
+        <SearchModal class="w- 40 md:w-72" />
         <button
           class="md:hidden rounded-lg focus:outline-none focus:shadow-outline"
           @click="openMobileMenu = !openMobileMenu"
@@ -135,7 +135,7 @@
 <script setup>
 import { ref } from "vue";
 import { Link } from "@inertiajs/vue3";
-
+import SearchModal from "./SearchModal.vue";
 import CustomDropdown from "./CustomDropdown.vue";
 // import SearchModal from "./SearchModal.vue";
 
