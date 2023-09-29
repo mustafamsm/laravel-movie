@@ -77,7 +77,7 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="mt-4">
+            <div class="mt-4">
               <h3 class="text-2xl font-semibold text-white">Download movie</h3>
               <div class="flex space-x-4">
                 <a
@@ -104,7 +104,7 @@
                   {{ download.name }}
                 </a>
               </div>
-            </div> -->
+            </div>
           </div>
         </section>
       <section

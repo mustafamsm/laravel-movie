@@ -75,8 +75,7 @@
                     </div>
 
 
-                   <!-- <div
-                    class="
+                    <div class="
                         w-full
                         mb-8
                         sm:max-w-md
@@ -85,132 +84,79 @@
                         bg-white
                         rounded-lg
                         shadow-lg
-                    "
-                    >
-              <div class="flex space-x-2">
-                <div v-for="download in downloads" :key="download.id">
-                  <Link
-                    class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded"
-                    :href="route('admin.downloads.destroy', download.id)"
-                    method="delete"
-                    as="button"
-                    type="button"
-                  >
-                    {{ download.name }}
-                  </Link>
-                </div>
-              </div>
-              <form @submit.prevent="submitDownload">
-                <div>
-                  <InputLabel for="name" value="Name" />
-                  <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="formDownload.name"
-                    autofocus
-                    autocomplete="name"
-                  />
-                  <div
-                    class="text-sm text-red-400"
-                    v-if="formDownload.errors.name"
-                  >
-                    {{ formDownload.errors.name }}
-                  </div>
-                </div>
-  
-                <div class="mt-4">
-                  <InputLabel for="web_url" value="Url" />
-                  <input
-                    id="web_url"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="formDownload.web_url"
-                  />
-  
-                  <div
-                    class="text-sm text-red-400"
-                    v-if="formDownload.errors.web_url"
-                  >
-                    {{ formDownload.errors.web_url }}
-                  </div>
-                </div>
-  
-                <div class="flex items-center justify-end mt-4">
-                  <PrimaryButton
-                    class="ml-4"
-                    :class="{ 'opacity-25': formDownload.processing }"
-                    :disabled="formDownload.processing"
-                  >
-                    add download
-                  </PrimaryButton>
-                </div>
-              </form>
-                    </div> -->
+                    ">
+                        <div class="flex space-x-2">
+                            <div v-for="download in downloads" :key="download.id">
+                                <Link class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded"
+                                    :href="route('admin.downloads.destroy', download.id)" method="delete" as="button"
+                                    type="button">
+                                {{ download.name }}
+                                </Link>
+                            </div>
+                        </div>
+                        <form @submit.prevent="submitDownload">
+                            <div>
+                                <InputLabel for="name" value="Name" />
+                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="formDownload.name"
+                                    autofocus autocomplete="name" />
+                                <div class="text-sm text-red-400" v-if="formDownload.errors.name">
+                                    {{ formDownload.errors.name }}
+                                </div>
+                            </div>
 
+                            <div class="mt-4">
+                                <InputLabel for="web_url" value="Url" />
+                                <input id="web_url" type="text" class="mt-1 block w-full" v-model="formDownload.web_url" />
 
-                    <div
-                    class="w-full mb-8 sm:max-w-md p-6 bg-white rounded-lg shadow-lg"
-                    >
-                    <div>
-                        <div class="flex">
-                        <div
-                            class="m-2 p-1 text-xs"
-                            v-for="mc in movieCasts"
-                            :key="mc.id"
-                        >
-                            {{ mc.name }}
-                        </div>
-                        </div>
-                        <form @submit.prevent="addCast">
-                        <multiselect
-                            v-model="castForm.casts"
-                            :options="casts"
-                            :multiple="true"
-                            :close-on-select="false"
-                            :clear-on-select="false"
-                            :preserve-search="true"
-                            placeholder="Add Casts"
-                            label="name"
-                            track-by="name"
-                        ></multiselect>
-                        <div class="mt-2">
-                            <PrimaryButton>add casts</PrimaryButton>
-                        </div>
+                                <div class="text-sm text-red-400" v-if="formDownload.errors.web_url">
+                                    {{ formDownload.errors.web_url }}
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end mt-4">
+                                <PrimaryButton class="ml-4" :class="{ 'opacity-25': formDownload.processing }"
+                                    :disabled="formDownload.processing">
+                                    add download
+                                </PrimaryButton>
+                            </div>
                         </form>
                     </div>
+
+
+                    <div class="w-full mb-8 sm:max-w-md p-6 bg-white rounded-lg shadow-lg">
+                        <div>
+                            <div class="flex">
+                                <div class="m-2 p-1 text-xs" v-for="mc in movieCasts" :key="mc.id">
+                                    {{ mc.name }}
+                                </div>
+                            </div>
+                            <form @submit.prevent="addCast">
+                                <multiselect v-model="castForm.casts" :options="casts" :multiple="true"
+                                    :close-on-select="false" :clear-on-select="false" :preserve-search="true"
+                                    placeholder="Add Casts" label="name" track-by="name"></multiselect>
+                                <div class="mt-2">
+                                    <PrimaryButton>add casts</PrimaryButton>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div
-                    class="w-full mb-8 sm:max-w-md p-6 bg-white rounded-lg shadow-lg"
-                    >
-                    <div>
-                        <div class="flex">
-                        <div
-                            class="m-2 p-1 text-xs"
-                            v-for="mt in movieTags"
-                            :key="mt.id"
-                        >
-                            {{ mt.tag_name }}
+                    <div class="w-full mb-8 sm:max-w-md p-6 bg-white rounded-lg shadow-lg">
+                        <div>
+                            <div class="flex">
+                                <div class="m-2 p-1 text-xs" v-for="mt in movieTags" :key="mt.id">
+                                    {{ mt.tag_name }}
+                                </div>
+                            </div>
+                            <form @submit.prevent="addTag">
+                                <multiselect v-model="tagForm.tags" :options="tags" :multiple="true"
+                                    :close-on-select="false" :clear-on-select="false" :preserve-search="true"
+                                    placeholder="Add tags" label="tag_name" track-by="tag_name"></multiselect>
+                                <div class="mt-2">
+                                    <PrimaryButton>add tags</PrimaryButton>
+                                </div>
+                            </form>
                         </div>
-                        </div>
-                        <form @submit.prevent="addTag">
-                        <multiselect
-                            v-model="tagForm.tags"
-                            :options="tags"
-                            :multiple="true"
-                            :close-on-select="false"
-                            :clear-on-select="false"
-                            :preserve-search="true"
-                            placeholder="Add tags"
-                            label="tag_name"
-                            track-by="tag_name"
-                        ></multiselect>
-                        <div class="mt-2">
-                            <PrimaryButton>add tags</PrimaryButton>
-                        </div>
-                        </form>
                     </div>
-                    </div> 
                 </section>
             </div>
         </div>
@@ -227,7 +173,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-  import Multiselect from "vue-multiselect";
+import Multiselect from "vue-multiselect";
 
 const props = defineProps({
     movie: Object,
@@ -281,6 +227,6 @@ function addTag() {
     });
 }
 </script>
-   <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
   
 <style></style>

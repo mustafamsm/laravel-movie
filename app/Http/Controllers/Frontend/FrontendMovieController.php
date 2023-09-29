@@ -28,6 +28,7 @@ class FrontendMovieController extends Controller
             'casts'=>$movie->casts,
             'tags'=>$movie->tags,
             'trailers'=>$movie->trailers,
+            'downloads'=>$movie->downloads,
         ]);
     }
 }

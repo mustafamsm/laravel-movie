@@ -49,10 +49,10 @@ class Movie extends Model implements \Spatie\Searchable\Searchable
         return $this->morphMany(TrailerUrl::class, 'trailerable');
     }
 
-    // public function downloads()
-    // {
-    //     return $this->morphMany(Download::class, 'downloadable');
-    // }
+    public function downloads()
+    {
+        return $this->morphMany(Download::class, 'downloadable');
+    }
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');

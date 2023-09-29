@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Models\Cast;
+use App\Models\Download;
 use Inertia\Inertia;
 use App\Models\Movie;
 use App\Models\TrailerUrl;
@@ -16,7 +17,7 @@ class MovieAttachController extends Controller
         return Inertia::render('Movies/Attach', [
             'movie' => $movie,
             'trailers' => $movie->trailers,
-            // 'downloads' => $movie->downloads,
+            'downloads' => $movie->downloads,
             'casts' => Cast::all('id', 'name'),
             'tags' => Tag::all('id', 'tag_name'),
             'movieCasts' => $movie->casts,
@@ -55,5 +56,18 @@ class MovieAttachController extends Controller
 
         $movie->tags()->sync($tags_ids);
         return redirect()->back()->with('flash.banner', 'Tags Attached .');
+    }
+    public function addDownload(Movie $movie, Request $request){
+
+        $movie->downloads()->create($request->validate([
+            'name' => 'required',
+            'web_url' => 'required'
+        ]));
+        return redirect()->back()->with('flash.banner', 'Download Added .');
+    }
+    public function destroyDownload(Download $download)
+    {
+        $download->delete();
+        return redirect()->back()->with('flash.banner', 'Download Deleted .');
     }
 }
