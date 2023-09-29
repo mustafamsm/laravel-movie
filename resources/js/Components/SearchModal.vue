@@ -134,6 +134,7 @@
   
               <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <button
+                @click="results = []; isLoading = false; isOpen = false;"
                   class="
                     flex
                     items-center
@@ -189,10 +190,12 @@
                   "
                 >
                   <Link class="flex space-x-2" :href="item.url"
-                    ><div class="text-blue-700 hover:text-blue-500">
+                    >
+                    
+                     <div class="text-indigo-800 hover:text-blue-500">
                       {{ item.title }}
                     </div>
-                    <span>{{ item.type }}</span></Link
+                    <span class="text-indigo-300 hover:text-blue-200">{{ item.type }}</span></Link
                   >
                 </li>
               </ul>
@@ -230,6 +233,10 @@
   const results = ref([]);
   
   const search = debounce(async (term) => {
+    if (term.length < 1) {
+      results.value = [];
+      return;
+    }
     isLoading.value = true;
     let { data } = await axios.get("/api/search", { params: { search: term } });
     results.value = data;
