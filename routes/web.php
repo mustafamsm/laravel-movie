@@ -1,16 +1,20 @@
 <?php
 
 use Inertia\Inertia;
+use App\Models\Permission;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CastController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\MovieAttachController;
 use App\Http\Controllers\Admin\SeasonController;
 use App\Http\Controllers\Admin\TvShowController;
 use App\Http\Controllers\Admin\EpisodeController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\Frontend\FrontendTagController;
 use App\Http\Controllers\Frontend\FrontendCastController;
@@ -73,6 +77,15 @@ Route::middleware(['auth:sanctum', 'verified', 'role:admin'])->prefix('admin')->
     Route::resource('/genres', GenreController::class);
     Route::resource('/casts', CastController::class);
     Route::resource('/tags', TagController::class);
+
+
+    Route::resource('permissions',PermissionController::class);
+     // Roles
+     Route::resource('roles', RoleController::class);
+
+     // Users
+     Route::resource('users', UserController::class);
+ 
 });
  
 
@@ -84,8 +97,6 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-
-
     Route::get('/dashboard', function () {
     //    auth()->user()->assignRole('admin');
         return Inertia::render('Dashboard');
