@@ -48,15 +48,17 @@ Route::get('/tags/{tag:slug}', [FrontendTagController::class, 'show'])->name('ta
 
 
 
-Route::middleware(['auth:sanctum', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'role:admin|Super-Admin|editor'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Admin/Index');
     })->name('index');
     Route::resource('/movies', MovieController::class);
+    
     Route::get(
         '/movies/{movie}/attach',
         [MovieAttachController::class, 'index']
     )->name('movies.attach');
+
     Route::post('/movies/{movie}/add-trailer', [MovieAttachController::class, 'addTrailer'])->name(
         'movies.add.trailer'
     );

@@ -28,6 +28,13 @@ class SeasonController extends Controller
                 ->withQueryString(),
             'filters' => request()->only(['search', 'perPage']),
             'tvShow' => $tvShow,
+            'can'=>[
+                'create'=>auth()->user()->can('create seasons'),
+                'show'=>auth()->user()->can('show seasons'),
+                'edit'=>auth()->user()->can('edit seasons'),
+                'delete'=>auth()->user()->can('delete seasons'),
+                'show_episodes'=>auth()->user()->can('show episodes')
+            ]
         ]);
 
     }

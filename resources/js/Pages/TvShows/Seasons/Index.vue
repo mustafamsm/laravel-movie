@@ -10,7 +10,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-                    <div class="w-full flex mb-4 p-2 justify-end">
+                    <div class="w-full flex mb-4 p-2 justify-end" v-if="can.create">
                         <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
                             <div class="p-1 flex items-center">
                                 <label
@@ -142,10 +142,10 @@
                                     <TableData>{{ season.poster_path }}</TableData>
                                     <TableData>
                                         <div class="flex justify-around">
-                                            <ButtonLink :link="route('admin.seasons.edit',[tvShow.id ,season.id])">Edit</ButtonLink>
-                                            <ButtonLink class="bg-teal-500 hover:bg-teal-700" :link="route('admin.episodes.index',[tvShow.id ,season.id])">Episodes</ButtonLink>
+                                            <ButtonLink :link="route('admin.seasons.edit',[tvShow.id ,season.id])" v-if="can.edit">Edit</ButtonLink>
+                                            <ButtonLink class="bg-teal-500 hover:bg-teal-700" :link="route('admin.episodes.index',[tvShow.id ,season.id])" v-if="can.show_episodes">Episodes</ButtonLink>
 
-                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.seasons.destroy', [tvShow.id ,season.id])">Delete
+                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.seasons.destroy', [tvShow.id ,season.id]) " v-id="can.delete">Delete
                                             </ButtonLink>
                                         </div>
                                     </TableData>
@@ -181,6 +181,7 @@ const props = defineProps({
     tvShow: Object,
     seasons: Object,
     filters: Object,
+    can:Object,
 })
 const search = ref(props.filters.search)
 const perPage = ref(props.filters.perPage)

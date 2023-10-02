@@ -256,7 +256,7 @@ class PermissionsSeeder extends Seeder
            'email'=>'editor@user.com',
            'password'=>Hash::make('password')
         ]);
-        $user3->assignRole($role2);
+        $user4->assignRole($role2);
          
 
 

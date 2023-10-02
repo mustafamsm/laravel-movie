@@ -7,13 +7,26 @@ use App\Models\Genre;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 class MovieController extends Controller
 {
+
+  public function __construct()
+  {
+    $this->middleware('can:show movies')->only('index');
+    $this->middleware('can:create movies')->only('store');
+    $this->middleware('can:edit movies')->only('edit', 'update');
+    $this->middleware('can:delete movies')->only('destroy');
+    
+  }
   public function index()
   {
+    // abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+
 
     $perPage = request()->input('perPage') ?: 5;
 
@@ -26,7 +39,13 @@ class MovieController extends Controller
         })
         ->paginate($perPage)
         ->withQueryString(),
-      'filters' => request()->only(['search', 'perPage','column','direction'])
+      'filters' => request()->only(['search', 'perPage','column','direction']),
+      'can' => [
+        'create' => Auth::user()->can('create movies'),
+        'edit' => auth()->user()->can('edit movies'),
+        'delete' => auth()->user()->can('delete movies'),
+        'show'=> auth()->user()->can('show movies')
+      ],
     ]);
   }
 
