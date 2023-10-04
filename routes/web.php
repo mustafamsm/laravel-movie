@@ -50,7 +50,10 @@ Route::get('/tags/{tag:slug}', [FrontendTagController::class, 'show'])->name('ta
 
 Route::middleware(['auth:sanctum', 'verified', 'role:admin|Super-Admin|editor'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
+     
         return Inertia::render('Admin/Index');
+       
+    
     })->name('index');
     Route::resource('/movies', MovieController::class);
     

@@ -10,7 +10,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-                    <div class="w-full flex mb-4 p-2 justify-end" v-if="can.create">
+                    <div class="w-full flex mb-4 p-2 justify-end" v-show="can(['create tvShows'])">
                         <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
                             <div class="p-1 flex items-center">
                                 <label
@@ -140,10 +140,10 @@
                                   <TableData>{{ tvshow.poster_path }}</TableData>
                                   <TableData>
                                        <div class="flex justify-around">
-                                             <ButtonLink :link="route('admin.tv-shows.edit', tvshow.id)" v-if="can.edit">Edit</ButtonLink>
-                                           <ButtonLink class="bg-teal-500 hover:bg-teal-700" :link="route('admin.seasons.index', tvshow.id)" v-if="can.show_seasons">Seasons</ButtonLink>
+                                             <ButtonLink :link="route('admin.tv-shows.edit', tvshow.id)" v-show="can(['edit tvShows'])">Edit</ButtonLink>
+                                           <ButtonLink class="bg-teal-500 hover:bg-teal-700" :link="route('admin.seasons.index', tvshow.id)" v-show="can(['show seaseons'])">Seasons</ButtonLink>
 
-                                           <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.tv-shows.destroy', tvshow.id)" v-if="can.delete">Delete
+                                           <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.tv-shows.destroy', tvshow.id)" v-show="can(['delete tvShows'])">Delete
                                             </ButtonLink>
                                        </div>
                                     </TableData>
@@ -178,7 +178,7 @@ import Table from "@/Components/Table.vue";
 const props = defineProps({
     tvShows: Object,
     filters: Object,
-    can:Object,
+  
 })
 const search = ref(props.filters.search)
 const perPage = ref(props.filters.perPage)

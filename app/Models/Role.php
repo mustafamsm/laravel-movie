@@ -3,20 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+ 
+use Spatie\Permission\Models\Role as ModelsRole;
 
-class Role extends Model
+class Role extends ModelsRole
 {
     use HasFactory;
-
-    public $table='roles';
-    protected $fillable = [
-        'name'
-    ];
-
-
-    
-    public function permissions(){
-        $this->belongsToMany(Permission::class);
+    public function getCreatedAtAttribute() {
+        return date('d-m-Y H:i', strtotime($this->attributes['created_at']));
     }
+
+    public function getUpdatedAtAttribute() {
+        return date('d-m-Y H:i', strtotime($this->attributes['updated_at']));
+    }
+    
+   
 }

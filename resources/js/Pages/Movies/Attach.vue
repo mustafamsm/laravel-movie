@@ -35,7 +35,7 @@
                                     <span class="text-xs text-red-100">
                                         <Link class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded"
                                             :href="route('admin.trailers.destroy', trailer.id)" method="delete" as="button"
-                                            type="button" v-if="can.delete_trailers">
+                                            type="button" v-show="can(['delete trailers'])">
 
 
                                         delete
@@ -45,7 +45,7 @@
 
                             </div>
                         </div>
-                        <form @submit.prevent="submitTrailer" v-if="can.edit_trailers">
+                        <form @submit.prevent="submitTrailer" v-show="can(['edit trailers'])">
                             <div>
                                 <InputLabel for="name" value="Name" />
                                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" autofocus
@@ -89,12 +89,12 @@
                             <div v-for="download in downloads" :key="download.id">
                                 <Link class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded"
                                     :href="route('admin.downloads.destroy', download.id)" method="delete" as="button"
-                                    type="button" v-if="can.delete_downloads">
+                                    type="button" v-show="can(['show downloads'])">
                                 {{ download.name }}
                                 </Link>
                             </div>
                         </div>
-                        <form @submit.prevent="submitDownload" v-if="can.edit_downloads">
+                        <form @submit.prevent="submitDownload" v-show="can(['edit downloads'])">
                             <div>
                                 <InputLabel for="name" value="Name" />
                                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="formDownload.name"
@@ -130,7 +130,7 @@
                                     {{ mc.name }}
                                 </div>
                             </div>
-                            <form @submit.prevent="addCast" v-if="can.edit_casts">
+                            <form @submit.prevent="addCast" v-show="can(['edit cast'])">
                                 <multiselect v-model="castForm.casts" :options="casts" :multiple="true"
                                     :close-on-select="false" :clear-on-select="false" :preserve-search="true"
                                     placeholder="Add Casts" label="name" track-by="name"></multiselect>
@@ -147,7 +147,7 @@
                                     {{ mt.tag_name }}
                                 </div>
                             </div>
-                            <form @submit.prevent="addTag" v-if="can.edit_tags">
+                            <form @submit.prevent="addTag" v-show="can(['edit tags'])">
                                 <multiselect v-model="tagForm.tags" :options="tags" :multiple="true"
                                     :close-on-select="false" :clear-on-select="false" :preserve-search="true"
                                     placeholder="Add tags" label="tag_name" track-by="tag_name"></multiselect>
@@ -183,7 +183,7 @@ const props = defineProps({
     tags: Array,
     movieTags: Array,
     movieCasts: Array,
-    can: Object,
+ 
 });
 
 const form = useForm({

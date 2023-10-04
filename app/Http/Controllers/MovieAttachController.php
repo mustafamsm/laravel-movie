@@ -22,17 +22,7 @@ class MovieAttachController extends Controller
             'tags' => Tag::all('id', 'tag_name'),
             'movieCasts' => $movie->casts,
             'movieTags' => $movie->tags,
-            'can' => [
-                'edit_trailers' => auth()->user()->can('edit trailers'),
-                'delete_trailers' => auth()->user()->can('delete trailers'),
-                'edit_casts' => auth()->user()->can('edit cast'),
-                'edit_tags' => auth()->user()->can('edit tags'),
-                'edit_downloads' => auth()->user()->can('edit downloads'),
-                'delete_downloads' => auth()->user()->can('delete downloads'),
-
-
-
-            ],
+            
 
         ]);
     }

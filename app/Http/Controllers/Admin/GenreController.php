@@ -12,6 +12,14 @@ use App\Http\Controllers\Controller;
 
 class GenreController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:create genres')->only('store');
+        $this->middleware('can:edit genres')->only('update','edit');
+        $this->middleware('can:delete genres')->only('destroy');
+        $this->middleware('can:show genres')->only('index');
+        
+    }
     public function index()
   {
       $perPage = request()->input('perPage') ?: 5;
@@ -23,7 +31,8 @@ class GenreController extends Controller
               })
               ->paginate($perPage)
               ->withQueryString(),
-          'filters' => request()->only(['search', 'perPage'])
+          'filters' => request()->only(['search', 'perPage']),
+        
       ]);
   }
 

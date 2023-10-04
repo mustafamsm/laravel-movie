@@ -315,6 +315,7 @@ import Sidebar from "../Components/Sidebar.vue";
 export default defineComponent({
     props: {
         title: String,
+      
     },
 
     components: {

@@ -228,6 +228,73 @@ class PermissionsSeeder extends Seeder
         ]);
 
         $role4 = Role::create(['name' => 'Super-Admin']);
+         $role4->givePermissionTo([
+            'create movies',
+            'edit movies',
+            'delete movies',
+            'show movies',
+
+            'create tvShows',
+            'edit tvShows',
+            'delete tvShows',
+            'show tvShows',
+
+            'create seasons',
+            'edit seasons',
+            'delete seasons',
+            'show seasons',
+
+            'create episodes',
+            'edit episodes',
+            'delete episodes',
+            'show episodes',
+
+            'create genres',
+            'edit genres',
+            'delete genres',
+            'show genres',
+
+            'create cast',
+            'edit cast',
+            'delete cast',
+            'show cast',
+
+            'create tags',
+            'edit tags',
+            'delete tags',
+            'show tags',
+
+            'create trailers',
+            'edit trailers',
+            'delete trailers',
+            'show trailers',
+
+            'create downloads',
+            'edit downloads',
+            'delete downloads',
+            'show downloads',
+
+            'create users',
+            'edit users',
+            'delete users',
+            'show users',
+
+            'create roles',
+            'edit roles',
+            'delete roles',
+            'show roles',
+
+            'create permissions',
+            'edit permissions',
+            'delete permissions',
+            'show permissions',
+
+            
+            'create settings',
+            'edit settings',
+            'delete settings',
+            'show settings',
+         ]);
 
         $user=User::create([
             'name'=>'super Admin',

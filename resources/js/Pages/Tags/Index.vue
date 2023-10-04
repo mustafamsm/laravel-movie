@@ -9,7 +9,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-          <div class="w-full flex mb-4 p-2 justify-end">
+          <div class="w-full flex mb-4 p-2 justify-end" v-show="can(['create tags'])">
             <Link
               :href="route('admin.tags.create')"
               class="
@@ -129,7 +129,7 @@
                             py-2
                             rounded-lg
                           "
-
+                          v-show="can(['edit tags'])"
                         >
                           Edit
                         </Link>
@@ -146,6 +146,7 @@
                             py-2
                             rounded-lg
                           "
+                          v-show="can(['delete tags'])"
                         >
                           Delete
                         </Link>
@@ -177,6 +178,7 @@ import { router } from '@inertiajs/vue3'
 const props=defineProps({
     tags:Object,
     filters:Object,
+    
 })
 const search=ref(props.filters.search)
 const perPage=ref(5)

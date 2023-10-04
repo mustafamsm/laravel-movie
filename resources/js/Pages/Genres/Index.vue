@@ -7,7 +7,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-                    <div class="w-full flex mb-4 p-2 justify-end">
+                    <div class="w-full flex mb-4 p-2 justify-end" v-show="can(['create genres'])">
                         <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
                             <div class="p-1">
                                 <button
@@ -90,16 +90,16 @@
                                             type="text"
                                             placeholder="Search by title"
                                             class="
-                        px-8
-                        py-3
-                        w-full
-                        md:w-2/6
-                        rounded-md
-                        bg-gray-100
-                        border-transparent
-                        focus:border-gray-500 focus:bg-white focus:ring-0
-                        text-sm
-                      "
+                                            px-8
+                                            py-3
+                                            w-full
+                                            md:w-2/6
+                                            rounded-md
+                                            bg-gray-100
+                                            border-transparent
+                                            focus:border-gray-500 focus:bg-white focus:ring-0
+                                            text-sm
+                                        "
                                         />
                                     </div>
                                 </div>
@@ -140,8 +140,8 @@
                                     <TableData>{{ genre.slug }}</TableData>
                                     <TableData>
                                         <div class="flex justify-around">
-                                            <ButtonLink :link="route('admin.genres.edit', genre.id)">Edit</ButtonLink>
-                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.genres.destroy', genre.id)">Delete
+                                            <ButtonLink :link="route('admin.genres.edit', genre.id)"  v-show="can(['edit genres'])">Edit</ButtonLink>
+                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.genres.destroy', genre.id)"  v-show="can(['delete genres'])">Delete
                                             </ButtonLink>
 
 
@@ -178,6 +178,7 @@ import Table from "@/Components/Table.vue";
 const props = defineProps({
     genres: Object,
     filters: Object,
+    
 })
 const search = ref(props.filters.search)
 const perPage = ref(props.filters.perPage)

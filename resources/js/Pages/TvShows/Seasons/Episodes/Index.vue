@@ -10,7 +10,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-                    <div class="w-full flex mb-4 p-2 justify-end">
+                    <div class="w-full flex mb-4 p-2 justify-end" v-show="can(['create episodes'])">
                         <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
                             <div class="p-1 flex items-center">
                                 <label
@@ -173,9 +173,9 @@
                                     </TableData>
                                     <TableData>
                                         <div class="flex justify-around">
-                                            <ButtonLink :link="route('admin.episodes.edit',[tvShow.id ,season.id,episode.id])">Edit</ButtonLink>
+                                            <ButtonLink :link="route('admin.episodes.edit',[tvShow.id ,season.id,episode.id])" v-show="can(['edit episodes'])">Edit</ButtonLink>
 
-                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.episodes.destroy', [tvShow.id ,season.id,episode.id])">Delete
+                                            <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button" :link="route('admin.episodes.destroy', [tvShow.id ,season.id,episode.id])" v-show="can(['delete episodes'])">Delete
                                             </ButtonLink>
                                         </div>
                                     </TableData>
@@ -211,7 +211,8 @@ const props = defineProps({
     tvShow: Object,
     season: Object,
     filters: Object,
-    episodes: Object
+    episodes: Object,
+ 
 })
 const search = ref(props.filters.search)
 const perPage = ref(props.filters.perPage)

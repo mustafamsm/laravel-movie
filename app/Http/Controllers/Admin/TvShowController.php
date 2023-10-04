@@ -32,13 +32,7 @@ class TvShowController extends Controller
                 ->paginate($perPage)
                 ->withQueryString(),
             'filters' => request()->only(['search', 'perPage']),
-            'can'=>[
-                'create'=>auth()->user()->can('create tvShows'),
-                'edit'=>auth()->user()->can('edit tvShows'),
-                'delete'=>auth()->user()->can('delete tvShows'),
-                'show'=>auth()->user()->can('show tvShows'),
-               'show_seasons'=>auth()->user()->can('show seasons')
-            ]
+            
         ]);
     }
 

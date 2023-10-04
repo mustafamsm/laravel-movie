@@ -10,7 +10,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
-                    <div class="w-full flex mb-4 p-2 justify-end" v-if="can.create">
+                    <div class="w-full flex mb-4 p-2 justify-end" v-show="can(['create movies'])">
                         <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
                             <div class="p-1 flex items-center">
                                 <label for="tmdb_id_g" class="block text-sm font-medium text-gray-700 mr-4">Movie Tmdb
@@ -199,10 +199,10 @@
                                     </TableData>
                                     <TableData>
                                         <div class="flex space-x-2">
-                                            <ButtonLink :link="route('admin.movies.edit', movie.id)" v-if="can.edit">Edit</ButtonLink>
-                                            <ButtonLink :link="route('admin.movies.attach', movie.id)" v-if="can.edit">Attach</ButtonLink>
+                                            <ButtonLink :link="route('admin.movies.edit', movie.id)" v-show="can(['edit movies'])">Edit</ButtonLink>
+                                            <ButtonLink :link="route('admin.movies.attach', movie.id)" v-show="can(['edit movies'])">Attach</ButtonLink>
                                             <ButtonLink class="bg-red-500 hover:bg-red-700" method="delete" as="button"
-                                                :link="route('admin.movies.destroy', movie.id)" v-if="can.delete">Delete
+                                                :link="route('admin.movies.destroy', movie.id)" v-show="can(['delete movies'])">Delete
                                             </ButtonLink>
                                         </div>
                                     </TableData>
@@ -237,7 +237,7 @@ import { throttle, pickBy } from 'lodash'
 const props = defineProps({
     movies: Object,
     filters: Object,
-    can: Object,
+    
 })
 
 const movieTMDBId = ref('')

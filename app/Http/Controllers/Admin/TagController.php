@@ -11,6 +11,14 @@ use App\Http\Controllers\Controller;
 
 class TagController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('can:create tags')->only('create','store');
+    $this->middleware('can:edit tags')->only('update', 'edit');
+    $this->middleware('can:delete tags')->only('destroy');
+    $this->middleware('can:show tags')->only('index');
+    
+  }
     public function index()
   {
     
@@ -23,6 +31,7 @@ class TagController extends Controller
       ->paginate(request()->perPage ?? 5  )
       ->withQueryString(),
       'filters' => request()->only(['search','perPage']),
+       
      
     ]);
   }

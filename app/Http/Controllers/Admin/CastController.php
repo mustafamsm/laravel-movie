@@ -12,6 +12,15 @@ use Inertia\Inertia;
 
 class CastController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:create cast')->only('store');
+        $this->middleware('can:edit cast')->only('update', 'edit');
+        $this->middleware('can:delete cast')->only('destroy');
+        $this->middleware('can:show cast')->only('index');
+        
+        
+    }
     public function index()
     {
         $perPage = request()->input('perPage') ?: 5;
@@ -23,7 +32,8 @@ class CastController extends Controller
                 })
                 ->paginate($perPage)
                 ->withQueryString(),
-            'filters' => request()->only(['search', 'perPage'])
+            'filters' => request()->only(['search', 'perPage']),
+               
         ]);
     }
 

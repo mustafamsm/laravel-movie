@@ -40,12 +40,7 @@ class MovieController extends Controller
         ->paginate($perPage)
         ->withQueryString(),
       'filters' => request()->only(['search', 'perPage','column','direction']),
-      'can' => [
-        'create' => Auth::user()->can('create movies'),
-        'edit' => auth()->user()->can('edit movies'),
-        'delete' => auth()->user()->can('delete movies'),
-        'show'=> auth()->user()->can('show movies')
-      ],
+     
     ]);
   }
 

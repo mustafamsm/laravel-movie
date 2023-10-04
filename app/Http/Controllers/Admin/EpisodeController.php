@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Redirect;
 
 class EpisodeController extends Controller
 {
+
+
+    public function __construct()
+    {   
+        $this->middleware('can:create episodes')->only('store');
+        $this->middleware('can:edit episodes')->only('update','edit');
+        $this->middleware('can:delete episodes')->only('destroy');
+        $this->middleware('can:show episodes')->only('index');
+        
+    }
     public function index(TvShow $tvShow,Season $season){
 
 
@@ -30,6 +40,7 @@ class EpisodeController extends Controller
             'filters' => request()->only(['search', 'perPage']),
             'tvShow' => $tvShow,
             'season'=>$season,
+             
         ]);
 
     }
