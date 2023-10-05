@@ -1,94 +1,115 @@
-<template>
-    <admin-layout title="Dashboard">
-      <template #header>
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          Tags Create
-        </h2>
-      </template>
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="w-full flex mb-4 p-2">
-          <Link
-            :href="route('admin.tags.index')"
-            class="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
-           
-          >
-            Tag Index
-          </Link>
-        </div>
-        <section class="flex  content-center">
-          <form @submit.prevent="storeTag">
-            <div class="shadow overflow-hidden sm:rounded-md">
-              <div class="px-4 py-5 bg-white sm:p-6">
-                <div class="w-full space-y-3">
-                  <div class="">
-                    <label
-                      for="first-name"
-                      class="block text-sm font-medium text-gray-700"
-                      >Tag name</label
-                    >
-                    <input
-                      v-model="form.tagName"
-                      type="text"
-                      autocomplete="given-name"
-                      class=" 
-                        mt-1
-                        focus:ring-indigo-500 focus:border-indigo-500
-                        block
-                        w-full
-                        shadow-sm
-                        sm:text-sm
-                        border-gray-300
-                        rounded-md
-                      "
-                    />
-                    <p v-if="errors.tagName" class="text-red-500 text-xs italic">
-                      {{ errors.tagName }}
-                    </p>
+<script setup>
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import Modal from "@/Components/Modal.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import { useForm } from "@inertiajs/vue3";
+import Checkbox from "@/Components/Checkbox.vue";
+import { ref, watchEffect } from "vue";
 
-                  </div>
-                  <div>
-                    <button
-                      type="submit"
-                      class="
-                        px-4
-                        py-2
-                        mt-4
-                        bg-indigo-500
-                        hover:bg-indigo-700
-                        text-white
-                        rounded
-                      "
-                    >
-                      Create
-                    </button>
-                  </div>
-                </div>
+const props = defineProps({
+  show: Boolean,
+  title: String,
+  permissions: Object
+});
+const emit = defineEmits(["close"]);
+const multipleSelect = ref(false);
+
+const form = useForm({
+  name: "",
+  guard_name: "web",
+  permissions: [],
+});
+const create = () => {
+  form.post(route("admin.roles.store"), {
+    preserveScroll: true,
+    onSuccess: () => {
+      emit("close");
+      form.reset();
+      multipleSelect.value = false
+    },
+    onError: () => null,
+    onFinish: () => null
+
+  })
+}
+
+watchEffect(()=>{
+  if(props.show){
+    form.errors={};
+    
+  }
+});
+
+
+const selectAll = (event) => {
+    if (event.target.checked === false) {
+        form.permissions = [];
+    } else {
+        form.permissions = [];
+        props.permissions.forEach((permission) => {
+            form.permissions.push(permission.id);
+        });
+    }
+};
+
+const select = () => {
+    if (props.permissions.length == form.permissions.length) {
+        multipleSelect.value = true;
+    } else {
+        multipleSelect.value = false;
+    }
+};
+</script>
+
+<template>
+  <section class="space-y-6">
+    <Modal :show="props.show" @close="emit('close')">
+      <form class="p-6" @submit.prevent="create">
+        <h2 class="text-lg font-medium text-slate-900 dark:text-slate-100">
+          add  Role
+        </h2>
+        <div class="my-6 space-y-4">
+          <div>
+            <InputLabel for="name" value="role" />
+            <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required
+              :placeholder="name" :error="form.errors.name" />
+            <InputError class="mt-2" :message="form.errors.name" />
+          </div>
+          <div>
+            <InputLabel value="permission" />
+            <InputError class="mt-2" :message="form.errors.permissions" />
+            <div class="flex justify-start items-center space-x-2 mt-2">
+              <Checkbox id="permission-all" v-model:checked="multipleSelect" @change="selectAll" />
+              <InputLabel for="permission-all" value="check_all" />
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2">
+              <div class="flex items-center justify-start space-x-2" v-for="(permission, index) in props.permissions"
+                :key="index">
+                <input @change="select"
+                  class="rounded dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-primary dark:text-primary shadow-sm focus:ring-primary/80 dark:focus:ring-primary dark:focus:ring-offset-slate-800 dark:checked:bg-primary dark:checked:border-primary"
+                  type="checkbox" :id="'permission_' + permission.id" :value="permission.id" v-model="form.permissions" />
+                <InputLabel :for="'permission_' + permission.id" :value="permission.name" />
               </div>
             </div>
-          </form>
-        </section>
-      </div>
-    </admin-layout>
-  </template>
-  
-  <script setup>
-  import AdminLayout from "../../Layouts/AdminLayout.vue";
-  import { Link, useForm } from "@inertiajs/vue3";
-  
-defineProps({
-   errors: Object,
-  
-
-   })
-  const form = useForm({
-    tagName: "",
-    
-  });
-  
-  function storeTag() {
-    form.post("/admin/tags");
-  }
-  </script>
-  
-  <style>
-  </style>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <SecondaryButton :disabled="form.processing" @click="emit('close')">
+           close 
+          </SecondaryButton>
+          <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+            @click="create">
+            {{
+              form.processing
+              ? 'add' + "..."
+              : 'add'
+            }}
+          </PrimaryButton>
+        </div>
+      </form>
+    </Modal>
+  </section>
+</template>

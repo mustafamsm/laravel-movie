@@ -1,93 +1,161 @@
-<template>
-    <admin-layout title="Dashboard">
-      <template #header>
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          Tags Edit
-        </h2>
-      </template>
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="w-full flex mb-4 p-2">
-          <Link
-            :href="route('admin.tags.index')"
-            class="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
-          >
-            Tag Index
-          </Link>
-        </div>
-        <section class="flex content-center">
-          <form @submit.prevent="updateTag">
-            <div class="shadow overflow-hidden sm:rounded-md">
-              <div class="px-4 py-5 bg-white sm:p-6">
-                <div class="w-full space-y-3">
-                  <div class="">
-                    <label
-                      for="first-name"
-                      class="block text-sm font-medium text-gray-700"
-                      >Tag name</label
-                    >
-                    <input
-                      v-model="form.tagName"
-                      type="text"
-                      autocomplete="given-name"
-                      class="
-                        mt-1
-                        focus:ring-indigo-500 focus:border-indigo-500
-                        block
-                        w-full
-                        shadow-sm
-                        sm:text-sm
-                        border-gray-300
-                        rounded-md
-                      "
-                    />
-                  </div>
-                    <div v-if="errors.tagName">
-                        <p class="text-red-500 text-xs italic">
-                        {{ errors.tagName }}
-                        </p>
-                        </div>
-                  <div>
-                    <button
-                      type="submit"
-                      class="
-                        px-4
-                        py-2
-                        bg-indigo-500
-                        hover:bg-indigo-700
-                        text-white
-                        rounded
-                      "
-                    >
-                      Update
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </section>
-      </div>
-    </admin-layout>
-  </template>
-  
-  <script setup>
-  import AdminLayout from "../../Layouts/AdminLayout.vue";
-  import { Link, useForm } from "@inertiajs/vue3";
-  import { defineProps } from "vue";
-  
-  const props = defineProps({
-    tag: Object,
-    errors: Object,
+<script setup>
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import Modal from "@/Components/Modal.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import { useForm } from "@inertiajs/vue3";
+import { watchEffect, ref } from "vue";
+import Checkbox from "@/Components/Checkbox.vue";
+
+const props = defineProps({
+  show: Boolean,
+  title: String,
+  role: Object,
+  permissions: Object,
+})
+
+const multipleSelect = ref(false);
+
+const emit = defineEmits(['close']);
+
+const form = useForm({
+  name: "",
+  permissions: [],
+})
+
+const update = () => {
+  form.put(route('admin.roles.update', props.role?.id), {
+    preserveScroll: true,
+    onSuccess: () => {
+      emit("close");
+      form.reset();
+      multipleSelect.value = false;
+    },
+    onError: () => null,
+    OnFinish: () => null,
   });
-  
-  const form = useForm({
-    tagName: props.tag.tag_name,
-  });
-  
-  function updateTag() {
-    form.put("/admin/tags/" + props.tag.id);
+};
+
+watchEffect(()=>{
+  if(props.show){
+    form.props={};
+    form.name=props.role?.name;
+    form.permissions=props.role.permissions?.map((d)=>d.id);
   }
-  </script>
-  
-  <style>
-  </style>
+  if(props.permissions.length==props.role?.permissions.length){
+    multipleSelect.value=true;
+  }else{
+    multipleSelect.value=false;
+  }
+})
+const selectAll = (event) => {
+    if (event.target.checked === false) {
+        form.permissions = [];
+    } else {
+        form.permissions = [];
+        props.permissions.forEach((permission) => {
+            form.permissions.push(permission.id);
+        });
+    }
+};
+const select = () => {
+    if (props.permissions.length == form.permissions.length) {
+        multipleSelect.value = true;
+    } else {
+        multipleSelect.value = false;
+    }
+};
+
+</script>
+
+<template>
+  <seaction class="space-y-6">
+    <Modal :show="props.show" @clode="emit('close')">
+      <form @submit.prevent="update" class="p-6">
+        <h2 class="text-lg font-medium text-slate-900 dark:text-slate-100">
+         Edit {{ props.title }}
+        </h2>
+        <div class="my-6 space-y-4">
+                    <div>
+                        <InputLabel for="name" value="role" />
+                        <TextInput
+                            id="name"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="form.name"
+                            required
+                            placeholder="name"
+                            :error="form.errors.name"
+                        />
+                        <InputError class="mt-2" :message="form.errors.name" />
+                    </div>
+                    <div>
+                        <InputLabel value="Permission" />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.permissions"
+                        />
+                        <div
+                            class="flex justify-start items-center space-x-2 mt-2"
+                        >
+                            <Checkbox
+                                id="permission-all"
+                                v-model:checked="multipleSelect"
+                                @change="selectAll"
+                            />
+                            <InputLabel
+                                for="permission-all"
+                                value="Check All"
+                            />
+                        </div>
+                        <div
+                            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2"
+                        >
+                            <div
+                                class="flex items-center justify-start space-x-2"
+                                v-for="(permission, index) in props.permissions"
+                                :key="index"
+                            >
+                                <input
+                                    @change="select"
+                                    class="rounded dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-primary dark:text-primary shadow-sm focus:ring-primary/80 dark:focus:ring-primary dark:focus:ring-offset-slate-800 dark:checked:bg-primary dark:checked:border-primary"
+                                    type="checkbox"
+                                    :id="'permission_' + permission.id"
+                                    :value="permission.id"
+                                    v-model="form.permissions"
+                                />
+                                <InputLabel
+                                    :for="'permission_' + permission.id"
+                                    :value="permission.name"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <SecondaryButton
+                        :disabled="form.processing"
+                        @click="emit('close')"
+                    >
+                       close 
+                    </SecondaryButton>
+                    <PrimaryButton
+                        class="ml-3"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        @click="update"
+                    >
+                        {{
+                            form.processing
+                                ? "button save" + "..."
+                                : "button save"
+                        }}
+                    </PrimaryButton>
+                </div>
+      </form>
+
+    </Modal>
+  </seaction>
+</template>

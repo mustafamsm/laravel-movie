@@ -7,27 +7,22 @@
     </template>
 
     <div class="py-12">
-<Permission 
-:show="permissionOpen"
-@close="permissionOpen=false"
-:roleName="roleName"
-title="test title"
 
-/>
-
+      <div class="rounded-lg overflow-hidden w-fit">
+        <Edit :show="editOpen" @close="editOpen = false" :role="roleName" :permissions="props.permissions" title="Edit" />
+        <Create :show="createOpen" @close="createOpen=false" :permissions="props.permissions"  />
+        <Permission :show="permissionOpen" @close="permissionOpen = false" :roleName="roleName" title="test title" />
+        <Delete :show="deleteOpen" @close="deleteOpen=false" :role="roleName" title="delete"/>
+      </div>
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <section class="container mx-auto p-6 font-mono">
           <div class="w-full flex mb-4 p-2 justify-end">
-            <Link :href="route('admin.tags.create')" class="
-                px-4
-                py-2
-                bg-green-600
-                hover:bg-green-800
-                text-white
-                rounded-lg
-              ">
+            <PrimaryButton   v-show="can(['create roles'])"
+            class="rounded-none"
+            @click="createOpen = true"
+            >
             Create Role
-            </Link>
+            </PrimaryButton>
           </div>
 
           <div class="w-full mb-8 overflow-hidden bg-white rounded-lg shadow-lg">
@@ -105,39 +100,31 @@ title="test title"
 
                     </td>
 
-                    <td class="px-4 py-3 text-ms font-semibold border cursor-pointer" v-else-if="role.permissions.length != 0"
-                      @click="(permissionOpen = true), (roleName = role)">
+                    <td class="px-4 py-3 text-ms font-semibold border cursor-pointer"
+                      v-else-if="role.permissions.length != 0" @click="(permissionOpen = true), (roleName = role)">
                       {{ role.permissions.length }}
                       Permission
 
                     </td>
                     <td v-else class="whitespace-nowrap py-4 px-2 sm:py-3 cursor-pointer ">
-                      no permission 
+                      no permission
                     </td>
 
                     <td class="px-4 py-3 text-sm border">
                       <div class="flex justify-around">
-                        <Link :href="route('admin.roles.edit', role.id)" class=" 
-                            bg-green-500
-                            hover:bg-green-700
-                            text-white
-                            px-4
-                            py-2
-                            rounded-lg
-                          ">
-                        Edit
-                        </Link>
-                        <Link :href="route('admin.roles.destroy', role.id)" method="delete" as="button" type="button"
+                        <InfoButton v-if="can(['edit roles'])" type="button" @click="(editOpen = true), (roleName = role)"
+                          class="inline-flex items-center px-2 py-1.5 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition ease-in-out duration-150">
+                          Edit
+                        </InfoButton>
+                        <DangerButton 
+                        type="button"
                           class="
-                            bg-red-500
-                            hover:bg-red-700
-                            text-white
-                            px-4
-                            py-2
-                            rounded-lg
-                          ">
+                          px-2 py-1.5 rounded-none
+                          "
+                          @click="(deleteOpen = true), (roleName = role)"
+                          >
                         Delete
-                        </Link>
+                        </DangerButton>
                       </div>
                     </td>
                   </tr>
@@ -160,9 +147,15 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import Pagination from '@/Components/Pagination.vue'
 import { Link } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
-
+import Edit from '@/Pages/Roles/Edit.vue'
+import InfoButton from "@/Components/InfoButton.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import Create from '@/Pages/Roles/Create.vue'
 import { router } from '@inertiajs/vue3'
 import Permission from '@/Pages/Roles/Permission.vue';
+import Delete from '@/Pages/Roles/Delete.vue'
+
 const props = defineProps({
   roles: Object,
   filters: Object,
@@ -170,8 +163,12 @@ const props = defineProps({
 })
 const search = ref(props.filters.search)
 const perPage = ref(5)
+
 const roleName = ref(null);
 const permissionOpen = ref(false);
+const editOpen = ref(false);
+const createOpen=ref(false);
+const deleteOpen=ref(false);
 watch(search, value => {
   router.get(`/admin/roles`, { search: value, perPage: perPage.value },
     {

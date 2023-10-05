@@ -1,12 +1,12 @@
 <script setup>
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 import Modal from '@/Components/Modal.vue';
 const props=defineProps({
     show:Boolean,
-    title:String,
     roleName:Object
 })
-const emit=defineEmits(['close']);
+const emit=defineEmits(["close"]);
 </script>
 
 <template>

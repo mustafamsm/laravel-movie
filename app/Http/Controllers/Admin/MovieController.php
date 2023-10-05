@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
+use App\Exceptions\InternetOfflineException;
+use Illuminate\Http\Client\ConnectionException;
 
 class MovieController extends Controller
 {
@@ -20,7 +22,6 @@ class MovieController extends Controller
     $this->middleware('can:create movies')->only('store');
     $this->middleware('can:edit movies')->only('edit', 'update');
     $this->middleware('can:delete movies')->only('destroy');
-    
   }
   public function index()
   {
@@ -39,8 +40,8 @@ class MovieController extends Controller
         })
         ->paginate($perPage)
         ->withQueryString(),
-      'filters' => request()->only(['search', 'perPage','column','direction']),
-     
+      'filters' => request()->only(['search', 'perPage', 'column', 'direction']),
+
     ]);
   }
 
@@ -50,7 +51,14 @@ class MovieController extends Controller
     if ($movie) {
       return Redirect::back()->with('flash.banner', 'Movie Exists.');
     }
-    $apiMovie = Http::asJson()->get(config('services.tmdb.endpoint') . 'movie/' . $request->movieTMDBId . '?api_key=' . config('services.tmdb.secret') . '&language=en-US');
+
+    try {
+      $apiMovie = Http::asJson()->get(config('services.tmdb.endpoint') . 'movie/' . $request->movieTMDBId . '?api_key=' . config('services.tmdb.secret') . '&language=en-US');
+    } catch (ConnectionException $e) {
+      return Redirect::back()->with('flash.banner', 'Internet is Offline.');
+    }
+
+
 
     if ($apiMovie->successful()) {
 

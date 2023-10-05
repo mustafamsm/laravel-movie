@@ -6,11 +6,19 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class RoleController extends Controller
 {
-
+public function __construct()
+{
+    $this->middleware('can:show roles')->only('index');
+    $this->middleware('can:create roles')->only('store');
+    $this->middleware('can:edit roles')->only('edit', 'update');
+    $this->middleware('can:delete roles')->only('destroy');
+    
+}
     /**
      * Display a listing of the resource.
      */
@@ -29,6 +37,7 @@ class RoleController extends Controller
             $permissions = Permission::whereNotIn('name', ['create permissions', 'show permissions', 'update permissions', 'delete permissions'])->latest();
             $roles->where('name', '<>', 'Super-Admin');
         }
+       
         return Inertia::render('Roles/Index', [
 
             'roles' => $roles,
@@ -50,7 +59,26 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         
+             
+        $request->validate([
+            'name'=>'required|unique:roles,name',
+            'permissions'=>'required|array',
+        ]);
+            DB::beginTransaction();
+            try{
+                $role = Role::create([
+                    'name'=>$request->name,
+                    'guard_name'=>$request->guard_name
+                ]);
+                $role->givePermissionTo($request->permissions);
+                DB::commit();
+                return redirect()->back()->with('flash.banner', 'Role created successfully');
+    
+            }catch(\Throwable $th){
+                DB::rollBack();
+                return redirect()->back()->with('flash.banner', 'Something went wrong');
+            }
     }
 
     /**
@@ -74,7 +102,23 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $request->validate([
+            'name'=>'required|unique:roles,name,'.$role->id,
+            'permissions'=>'required|array',
+        ]);
+         DB::beginTransaction();
+         try{
+            $role->update([
+                'name'=>$request->name,
+            ]);
+            $role->syncPermissions($request->permissions);
+            DB::commit();
+            return redirect()->back()->with('flash.banner', 'Role updated successfully');
+
+         }catch(\Throwable $th){
+            DB::rollBack();
+            return redirect()->back()->with('flash.banner', 'Something went wrong');
+         }
     }
 
     /**
@@ -82,6 +126,13 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        try{
+            $role->delete();
+            return redirect()->back()->with('flash.banner', 'deleted successfully');
+
+        }catch(\Throwable $th){
+            return redirect()->back()->with('flash.banner', 'Something went wrong');
+
+        }
     }
 }
