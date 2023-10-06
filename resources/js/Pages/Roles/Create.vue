@@ -28,7 +28,7 @@ const create = () => {
     onSuccess: () => {
       emit("close");
       form.reset();
-      multipleSelect.value = false
+      multipleSelect.value = false;
     },
     onError: () => null,
     onFinish: () => null
@@ -36,12 +36,15 @@ const create = () => {
   })
 }
 
-watchEffect(()=>{
-  if(props.show){
+watchEffect(() => {
+  if (props.show) {
+    form.errors = {};
+    form.name = "";
+    form.permissions = [];
     form.errors={};
-    
   }
 });
+ 
 
 
 const selectAll = (event) => {
@@ -101,7 +104,7 @@ const select = () => {
            close 
           </SecondaryButton>
           <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-            @click="create">
+             type="submit">
             {{
               form.processing
               ? 'add' + "..."

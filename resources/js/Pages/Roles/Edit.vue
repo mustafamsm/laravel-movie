@@ -145,7 +145,7 @@ const select = () => {
                         class="ml-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
-                        @click="update"
+                        type="submit"
                     >
                         {{
                             form.processing
